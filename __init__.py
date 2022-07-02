@@ -1,6 +1,5 @@
 import datetime
 import os
-import time
 import requests
 import json
 
@@ -9,8 +8,8 @@ from mycroft_bus_client import Message
 from ovos_utils.log import LOG
 from ovos_utils.skills import get_skills_folder
 
-from mycroft.skills.core import resting_screen_handler, intent_file_handler, MycroftSkill
-from mycroft.skills.skill_loader import load_skill_module
+from mycroft.skills.core import resting_screen_handler, intent_file_handler,\
+    MycroftSkill
 from mycroft.skills.skill_manager import SkillManager
 from mycroft.skills.api import SkillApi
 
@@ -23,14 +22,14 @@ class OVOSHomescreenSkill(MycroftSkill):
         self.notifications_storage_model = []
         self.def_wallpaper_folder = path.dirname(__file__) + '/ui/wallpapers/'
         self.loc_wallpaper_folder = None
-        self.selected_wallpaper = None # Get from config after __init__ is done
+        self.selected_wallpaper = None  # Get from config after __init__ is done
         self.wallpaper_collection = []
-        self.rtlMode = None # Get from config after __init__ is done
+        self.rtlMode = None  # Get from config after __init__ is done
 
         # Populate skill IDs to use for data sources
-        self.weather_skill = None # Get from config after __init__ is done
-        self.datetime_skill = None # Get from config after __init__ is done
-        self.skill_info_skill = None # Get from config after __init__ is done
+        self.weather_skill = None  # Get from config after __init__ is done
+        self.datetime_skill = None  # Get from config after __init__ is done
+        self.skill_info_skill = None  # Get from config after __init__ is done
         self.weather_api = None
         self.datetime_api = None
         self.skill_info_api = None
@@ -65,7 +64,6 @@ class OVOSHomescreenSkill(MycroftSkill):
             os.mkdir(path.join(self.file_system.path, "wallpapers"))
 
         self.collect_wallpapers()
-        self._load_skill_apis()
 
         self.bus.emit(Message("mycroft.device.show.idle"))
 
@@ -118,7 +116,8 @@ class OVOSHomescreenSkill(MycroftSkill):
             self.gui["time_string"] = self.datetime_api.get_display_current_time()
             self.gui["date_string"] = self.datetime_api.get_display_date()
             self.gui["weekday_string"] = self.datetime_api.get_weekday()
-            self.gui['day_string'], self.gui["month_string"] = self._split_month_string(self.datetime_api.get_month_date())
+            self.gui['day_string'], self.gui["month_string"] = \
+                self._split_month_string(self.datetime_api.get_month_date())
             self.gui["year_string"] = self.datetime_api.get_year()
         else:
             LOG.warning("No datetime_api, skipping update")
@@ -243,7 +242,7 @@ class OVOSHomescreenSkill(MycroftSkill):
             if not self.skill_info_api:
                 self.skill_info_api = SkillApi.get(self.skill_info_skill)
         except Exception as e:
-            LOG.error(f"Failed To Import OVOS Info Skill: {e}")
+            LOG.error(f"Failed To Import Info Skill: {e}")
 
         # Import Date Time Skill As Date Time Provider
         try:
@@ -251,19 +250,6 @@ class OVOSHomescreenSkill(MycroftSkill):
                 self.datetime_api = SkillApi.get(self.datetime_skill)
         except Exception as e:
             LOG.error(f"Failed to import DateTime Skill: {e}")
-
-        # TODO: Depreciate this
-        if not self.datetime_api:
-            try:
-                root_dir = self.root_dir.rsplit("/", 1)[0]
-                time_date_path = str(root_dir) + f"/{self.datetime_skill}/__init__.py"
-                time_date_id = "datetimeskill"
-                datetimeskill = load_skill_module(time_date_path, time_date_id)
-                from datetimeskill import TimeSkill
-
-                self.datetime_api = TimeSkill()
-            except Exception as e:
-                LOG.error(f"Failed To Import DateTime Skill: {e}")
 
     def _split_month_string(self, month_date: str) -> list:
         """
@@ -287,21 +273,25 @@ class OVOSHomescreenSkill(MycroftSkill):
     def build_voice_applications_model(self):
         voiceApplicationsList = []
 
-        if path.exists("/opt/mycroft/skills/"):
-            skill_folders = listdir("/opt/mycroft/skills/")
-            folder_prefix = "/opt/mycroft/skills"
-        else:
-            skill_folders = listdir(get_skills_folder())
-            folder_prefix = get_skills_folder()
-
+        try:
+            if path.exists("/opt/mycroft/skills/"):
+                skill_folders = listdir("/opt/mycroft/skills/")
+                folder_prefix = "/opt/mycroft/skills"
+            else:
+                skill_folders = listdir(get_skills_folder())
+                folder_prefix = get_skills_folder()
+        except Exception as e:
+            LOG.exception(e)
+            skill_folders = list()
+            folder_prefix = None
         resource_app = "app.json"
         resource_mobile = "android.json"
 
         for folder in skill_folders:
             absolute_folder_path = path.join(folder_prefix, folder)
 
-            if path.exists(path.join(absolute_folder_path, resource_app)) and path.isfile(
-                path.join(absolute_folder_path, resource_app)) :
+            if path.exists(path.join(absolute_folder_path, resource_app)) and \
+                    path.isfile(path.join(absolute_folder_path, resource_app)):
                 with open(path.join(absolute_folder_path, resource_app)) as f:
                     expand_file = json.load(f)
                     folder_path = folder
@@ -313,9 +303,11 @@ class OVOSHomescreenSkill(MycroftSkill):
                                                       "action": expand_file["action"],
                                                       "folder": folder_path})
 
-            elif path.exists(path.join(absolute_folder_path, resource_mobile)) and path.isfile(
-                path.join(absolute_folder_path, resource_mobile)) :
-                with open(path.join(absolute_folder_path, resource_mobile)) as f:
+            elif path.exists(path.join(absolute_folder_path,
+                                       resource_mobile)) and path.isfile(
+                    path.join(absolute_folder_path, resource_mobile)):
+                with open(path.join(absolute_folder_path,
+                                    resource_mobile)) as f:
                     expand_file = json.load(f)
                     folder_path = folder
                     if not any(d.get('folder', None) == folder_path
@@ -325,15 +317,14 @@ class OVOSHomescreenSkill(MycroftSkill):
                                                       "name": expand_file["android_name"],
                                                       "action": expand_file["android_handler"],
                                                       "folder": folder_path})
-
         try:
             sort_on = "name"
             decorated = [(dict_[sort_on], dict_)
-                            for dict_ in voiceApplicationsList]
+                         for dict_ in voiceApplicationsList]
             decorated.sort()
             return [dict_ for (key, dict_) in decorated]
-
-        except Exception:
+        except Exception as e:
+            LOG.exception(e)
             return voiceApplicationsList
 
 
