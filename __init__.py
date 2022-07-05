@@ -282,11 +282,11 @@ class OVOSHomescreenSkill(MycroftSkill):
                 folder_prefix = get_skills_folder()
         except Exception as e:
             LOG.exception(e)
-            skill_folders = list()
-            folder_prefix = None
+            return
         resource_app = "app.json"
         resource_mobile = "android.json"
-
+        if not folder_prefix:
+            return
         for folder in skill_folders:
             absolute_folder_path = path.join(folder_prefix, folder)
 
