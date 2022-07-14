@@ -257,6 +257,9 @@ class OVOSHomescreenSkill(MycroftSkill):
         :param month_date: formatted month and day of month ("August 06" or "06 August")
         :return: [day, month]
         """
+        if not month_date:
+            LOG.error("No string to split")
+            return
         month_string = month_date.split(" ")
         if self.config_core.get('date_format') == 'MDY':
             day_string = month_string[1]
