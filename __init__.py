@@ -42,11 +42,6 @@ class OVOSHomescreenSkill(MycroftSkill):
         self.datetime_skill = self.settings.get("datetime_skill") or "skill-date-time.mycroftai"
         self.skill_info_skill = self.settings.get("examples_skill") or "ovos-skills-info.openvoiceos"
 
-        now = datetime.datetime.now()
-        callback_time = datetime.datetime(
-            now.year, now.month, now.day, now.hour, now.minute
-        ) + datetime.timedelta(seconds=60)
-        self.schedule_repeating_event(self.update_dt, callback_time, 10)
         self.skill_manager = SkillManager(self.bus)
 
         # Handler Registration For Notifications
@@ -58,7 +53,7 @@ class OVOSHomescreenSkill(MycroftSkill):
                        self.handle_notification_storage_model_update)
         self.gui.register_handler("homescreen.swipe.change.wallpaper",
                                   self.change_wallpaper)
-        self.add_event("mycroft.ready", self.handle_mycroft_ready)
+        self.add_event("mycroft.ready", self.handle_mycroft_ready, once=True)
 
         if not self.file_system.exists("wallpapers"):
             os.mkdir(path.join(self.file_system.path, "wallpapers"))
@@ -230,6 +225,8 @@ class OVOSHomescreenSkill(MycroftSkill):
 
     def handle_mycroft_ready(self, _):
         self._load_skill_apis()
+        interval = datetime.datetime.now() + datetime.timedelta(seconds=60)
+        self.schedule_repeating_event(self.update_dt, interval, 10)
 
     def _load_skill_apis(self):
         """
