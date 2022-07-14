@@ -67,7 +67,7 @@ class OVOSHomescreenSkill(MycroftSkill):
 
     @resting_screen_handler("OVOSHomescreen")
     def handle_idle(self, _):
-        LOG.debug('Activating Time/Date resting page')
+        LOG.info('Activating OVOSHomescreen resting page')
         self.gui['wallpaper_path'] = self.check_wallpaper_path(self.selected_wallpaper)
         self.gui['selected_wallpaper'] = self.selected_wallpaper
         self.gui['notification'] = {}
