@@ -129,6 +129,9 @@ class OVOSHomescreenSkill(MycroftSkill):
             self._load_skill_apis()
         if self.weather_api:
             current_weather_report = self.weather_api.get_current_weather_homescreen()
+            if not current_weather_report:
+                LOG.error("No weather report returned")
+                return
             self.gui["weather_api_enabled"] = True
             self.gui["weather_code"] = current_weather_report.get("weather_code")
             self.gui["weather_temp"] = current_weather_report.get("weather_temp")
