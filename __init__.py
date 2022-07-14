@@ -116,8 +116,11 @@ class OVOSHomescreenSkill(MycroftSkill):
             self.gui["time_string"] = self.datetime_api.get_display_current_time()
             self.gui["date_string"] = self.datetime_api.get_display_date()
             self.gui["weekday_string"] = self.datetime_api.get_weekday()
-            self.gui['day_string'], self.gui["month_string"] = \
+            day, month = \
                 self._split_month_string(self.datetime_api.get_month_date())
+            if day or month:
+                self.gui['day_string'], self.gui["month_string"] = day, month
+
             self.gui["year_string"] = self.datetime_api.get_year()
         else:
             LOG.warning("No datetime_api, skipping update")
@@ -259,7 +262,7 @@ class OVOSHomescreenSkill(MycroftSkill):
         """
         if not month_date:
             LOG.error("No string to split")
-            return
+            return [None, None]
         month_string = month_date.split(" ")
         if self.config_core.get('date_format') == 'MDY':
             day_string = month_string[1]
