@@ -87,7 +87,7 @@ class OVOSHomescreenSkill(MycroftSkill):
             self.update_weather()
             self.update_examples()
         except Exception as e:
-            LOG.error(e)
+            LOG.exception(e)
 
         self.gui['rtl_mode'] = self.rtlMode
         self.gui['dateFormat'] = self.config_core.get("date_format") or "DMY"
