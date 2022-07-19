@@ -18,7 +18,7 @@ class OVOSHomescreenSkill(MycroftSkill):
     # The constructor of the skill, which calls MycroftSkill's constructor
     def __init__(self):
         super(OVOSHomescreenSkill, self).__init__(name="OVOSHomescreen")
-        self.skill_manager = None
+        # self.skill_manager = None
         self.notifications_storage_model = []
         self.def_wallpaper_folder = path.dirname(__file__) + '/ui/wallpapers/'
         self.loc_wallpaper_folder = None
@@ -42,7 +42,7 @@ class OVOSHomescreenSkill(MycroftSkill):
         self.datetime_skill = self.settings.get("datetime_skill") or "skill-date-time.mycroftai"
         self.skill_info_skill = self.settings.get("examples_skill") or "ovos-skills-info.openvoiceos"
 
-        self.skill_manager = SkillManager(self.bus)
+        # self.skill_manager = SkillManager(self.bus)
 
         # Handler Registration For Notifications
         self.add_event("homescreen.wallpaper.set",
