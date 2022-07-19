@@ -22,7 +22,7 @@ allow_unknown = False
 allow_unlicense = True
 allow_ambiguous = False
 
-pkg_name = "ovos-skill-homescreen"
+pkg_name = "ovos-skill-homescreen-lite"
 
 
 class TestLicensing(unittest.TestCase):
