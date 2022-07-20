@@ -6,11 +6,10 @@ import json
 from os import path, listdir
 from mycroft_bus_client import Message
 from ovos_utils.log import LOG
-from ovos_utils.skills import get_skills_folder
+from ovos_utils.skills.locations import get_default_skills_directory
 
 from mycroft.skills.core import resting_screen_handler, intent_file_handler,\
     MycroftSkill
-from mycroft.skills.skill_manager import SkillManager
 from mycroft.skills.api import SkillApi
 
 
@@ -277,24 +276,18 @@ class OVOSHomescreenSkill(MycroftSkill):
     # Build Voice Applications Model
 
     def build_voice_applications_model(self):
-        voiceApplicationsList = []
-
-        try:
-            if path.exists("/opt/mycroft/skills/"):
-                skill_folders = listdir("/opt/mycroft/skills/")
-                folder_prefix = "/opt/mycroft/skills"
-            else:
-                skill_folders = listdir(get_skills_folder())
-                folder_prefix = get_skills_folder()
-        except Exception as e:
-            LOG.exception(e)
+        voice_applications_list = []
+        skill_folder = get_default_skills_directory(self.config_core)
+        if not path.isdir(skill_folder):
             return
+        skill_folders = listdir(skill_folder)
+
         resource_app = "app.json"
         resource_mobile = "android.json"
-        if not folder_prefix:
+        if not skill_folder:
             return
         for folder in skill_folders:
-            absolute_folder_path = path.join(folder_prefix, folder)
+            absolute_folder_path = path.join(skill_folder, folder)
 
             if path.exists(path.join(absolute_folder_path, resource_app)) and \
                     path.isfile(path.join(absolute_folder_path, resource_app)):
@@ -302,9 +295,9 @@ class OVOSHomescreenSkill(MycroftSkill):
                     expand_file = json.load(f)
                     folder_path = folder
                     if not any(d.get('folder', None) == folder_path
-                               for d in voiceApplicationsList):
+                               for d in voice_applications_list):
                         thumb = absolute_folder_path + expand_file["icon"]
-                        voiceApplicationsList.append({"thumbnail": thumb,
+                        voice_applications_list.append({"thumbnail": thumb,
                                                       "name": expand_file["name"],
                                                       "action": expand_file["action"],
                                                       "folder": folder_path})
@@ -317,21 +310,21 @@ class OVOSHomescreenSkill(MycroftSkill):
                     expand_file = json.load(f)
                     folder_path = folder
                     if not any(d.get('folder', None) == folder_path
-                               for d in voiceApplicationsList):
+                               for d in voice_applications_list):
                         thumb = absolute_folder_path + expand_file["android_icon"]
-                        voiceApplicationsList.append({"thumbnail": thumb,
+                        voice_applications_list.append({"thumbnail": thumb,
                                                       "name": expand_file["android_name"],
                                                       "action": expand_file["android_handler"],
                                                       "folder": folder_path})
         try:
             sort_on = "name"
             decorated = [(dict_[sort_on], dict_)
-                         for dict_ in voiceApplicationsList]
+                         for dict_ in voice_applications_list]
             decorated.sort()
             return [dict_ for (key, dict_) in decorated]
         except Exception as e:
             LOG.exception(e)
-            return voiceApplicationsList
+            return voice_applications_list
 
 
 def create_skill():
