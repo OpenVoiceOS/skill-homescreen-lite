@@ -6,12 +6,13 @@ from shutil import rmtree
 from ovos_skills_manager import SkillEntry
 
 branch = "dev"
-url = f"https://github.com/OpenVoiceOS/ovos-skill-homescreen@{branch}"
+url = f"https://github.com/OpenVoiceOS/skill-homescreen-lite@{branch}"
+
 
 class TestOSM(unittest.TestCase):
     @classmethod
     def setUpClass(self):
-        self.skill_id = "ovos-skill-homescreen.OpenVoiceOS"
+        self.skill_id = "skill-homescreen-lite.OpenVoiceOS"
 
     def test_osm_install(self):
         skill = SkillEntry.from_github_url(url)
