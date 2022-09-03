@@ -95,7 +95,13 @@ class OVOSHomescreenSkill(MycroftSkill):
             LOG.warning("Requested update before skill_info API loaded")
             self._load_skill_apis()
         if self.skill_info_api:
-            self.gui['skill_examples'] = {"examples": self.skill_info_api.skill_info_examples()}
+            prefix = self.settings.get("examples_prefix", "Ask Me,")
+            if prefix:
+                examples = [' '.join((prefix, e)) for e in
+                            self.skill_info_api.skill_info_examples()]
+            else:
+                examples = self.skill_info_api.skill_info_examples()
+            self.gui['skill_examples'] = {"examples": examples}
         else:
             LOG.warning("No skill_info_api, skipping update")
 
