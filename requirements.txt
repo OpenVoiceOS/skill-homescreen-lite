@@ -1,3 +1,4 @@
 requests~=2.20
 pillow==7.1.2
-ovos_utils~=0.0,>=0.0.23
+ovos-utils~=0.0, >=0.0.28a4
+ovos_workshop~=0.0, >=0.0.11a4

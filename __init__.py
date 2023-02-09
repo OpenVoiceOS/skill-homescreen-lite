@@ -7,6 +7,8 @@ from os import path, listdir
 from mycroft_bus_client import Message
 from ovos_utils.log import LOG
 from ovos_utils.skills.locations import get_default_skills_directory
+from ovos_utils.process_utils import RuntimeRequirements
+from ovos_utils import classproperty
 
 from mycroft.skills.core import resting_screen_handler, intent_file_handler,\
     MycroftSkill
@@ -32,6 +34,18 @@ class OVOSHomescreenSkill(MycroftSkill):
         self.weather_api = None
         self.datetime_api = None
         self.skill_info_api = None
+
+    @classproperty
+    def runtime_requirements(self):
+        return RuntimeRequirements(internet_before_load=False,
+                                   network_before_load=False,
+                                   gui_before_load=True,
+                                   requires_internet=False,
+                                   requires_network=False,
+                                   requires_gui=True,
+                                   no_internet_fallback=True,
+                                   no_network_fallback=True,
+                                   no_gui_fallback=False)
 
     def initialize(self):
         self.loc_wallpaper_folder = self.file_system.path + '/wallpapers/'
