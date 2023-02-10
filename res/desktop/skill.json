@@ -1,0 +1,24 @@
+{
+    "authorname": "OpenVoiceOS",
+    "foldername": "skill-homescreen-lite",
+    "url": "https://github.com/OpenVoiceOS/skill-homescreen-lite",
+    "branch": "dev",
+    "license": "apache-2.0",
+    "tags": [
+        "permissive-license"
+    ],
+    "short_description": "Minimal homescreen for remote client devices",
+    "last_updated": "2023-02-10T00:01:13Z",
+    "requirements": {
+        "python": [
+            "requests~=2.20",
+            "pillow==7.1.2",
+            "ovos-utils~=0.0, >=0.0.28a4",
+            "ovos_workshop~=0.0, >=0.0.11a4"
+        ],
+        "skill": [],
+        "system": {}
+    },
+    "desktopFile": false,
+    "examples": []
+}
