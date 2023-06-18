@@ -4,21 +4,19 @@ import requests
 import json
 
 from os import path, listdir
-from mycroft_bus_client import Message
+from ovos_bus_client import Message
 from ovos_utils.log import LOG
 from ovos_utils.skills.locations import get_default_skills_directory
 from ovos_utils.process_utils import RuntimeRequirements
 from ovos_utils import classproperty
 
-from mycroft.skills.core import resting_screen_handler, intent_file_handler,\
-    MycroftSkill
-from mycroft.skills.api import SkillApi
+from ovos_workshop.decorators import resting_screen_handler, intent_file_handler
+from ovos_workshop.skills.ovos import OVOSSkill
+from ovos_utils.skills.api import SkillApi
 
 
-class OVOSHomescreenSkill(MycroftSkill):
-    # The constructor of the skill, which calls MycroftSkill's constructor
-    def __init__(self):
-        super(OVOSHomescreenSkill, self).__init__(name="OVOSHomescreen")
+class OVOSHomescreenSkill(OVOSSkill):
+    def __init__(self, *args, **kwargs):
         # self.skill_manager = None
         self.notifications_storage_model = []
         self.def_wallpaper_folder = path.dirname(__file__) + '/ui/wallpapers/'
@@ -34,6 +32,8 @@ class OVOSHomescreenSkill(MycroftSkill):
         self.weather_api = None
         self.datetime_api = None
         self.skill_info_api = None
+        
+        super().__init__(*args, **kwargs)
 
     @classproperty
     def runtime_requirements(self):
@@ -339,7 +339,3 @@ class OVOSHomescreenSkill(MycroftSkill):
         except Exception as e:
             LOG.exception(e)
             return voice_applications_list
-
-
-def create_skill():
-    return OVOSHomescreenSkill()
