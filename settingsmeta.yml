@@ -20,3 +20,7 @@ skillMetadata:
           type: text
           label: Wallpaper
           value: default.jpg
+        - name: examples_prefix
+          type: text
+          label: Examples Prefix
+          value: "Ask Me,"

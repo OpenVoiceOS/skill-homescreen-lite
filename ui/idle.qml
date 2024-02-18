@@ -483,7 +483,7 @@ Mycroft.CardDelegate {
                         wrapMode: Text.WordWrap
                         font.weight: Font.DemiBold
                         property string entry
-                        text: '<i>“Ask Me, ' + entry + '”</i>'
+                        text: '<i>“' + entry + '”</i>'
                         color: "white"
                         layer.enabled: true
                         layer.effect: DropShadow {
