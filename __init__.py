@@ -12,7 +12,7 @@ from ovos_utils import classproperty
 
 from ovos_workshop.decorators import resting_screen_handler, intent_file_handler
 from ovos_workshop.skills.ovos import OVOSSkill
-from ovos_utils.skills.api import SkillApi
+from ovos_workshop.skills.api import SkillApi
 
 
 class OVOSHomescreenSkill(OVOSSkill):
@@ -37,15 +37,8 @@ class OVOSHomescreenSkill(OVOSSkill):
 
     @classproperty
     def runtime_requirements(self):
-        return RuntimeRequirements(internet_before_load=False,
-                                   network_before_load=False,
-                                   gui_before_load=True,
-                                   requires_internet=False,
-                                   requires_network=False,
-                                   requires_gui=True,
-                                   no_internet_fallback=True,
-                                   no_network_fallback=True,
-                                   no_gui_fallback=False)
+        return RuntimeRequirements(gui_before_load=True,
+                                   requires_gui=True)
 
     def initialize(self):
         self.loc_wallpaper_folder = self.file_system.path + '/wallpapers/'
